@@ -99,9 +99,89 @@ hellothread: I'm byeThread's run
 ### Runnable 을 구현해서 Thread 생성
 - Thread 생성 시, Runnable을 구현한 클래스를 생성자에 넣어 생성한다.
 - 스레드를 사용할 때는 Thread를 상속받는 방법보다 Runnable 인터페이스를 구현하는 방식을 사용한다.
-    - 자바는 단일 상속만 허용하므로, Thread를 상속하는 경우 다른 클래스를 상속할 수 없다.
-    - 인터페이스를 사용하는 방법에 비해 유연성이 떨어진다.
-    - 인터페이스 이용 시, 코드의 분리가 되어 쓸데 없는 Thread 관련 메서드나 필드를 사용하지 않는다.
-
+  - 자바는 단일 상속만 허용하므로, Thread를 상속하는 경우 다른 클래스를 상속할 수 없다.
+  - 인터페이스를 사용하는 방법에 비해 유연성이 떨어진다.
+  - 인터페이스 이용 시, 코드의 분리가 되어 쓸데 없는 Thread 관련 메서드나 필드를 사용하지 않는다.
 - Runnable을 만드는 다양한 방법
-  - 
+```java
+/**
+ * 내부클래스
+ */
+import static util.MyLogger.log;
+
+public class InnerRunnableMain1 {
+    public static void main(String[] args) {
+        log("main() start");
+        MyRunnable myRunnable = new MyRunnable();
+        Thread thread = new Thread(myRunnable);
+        thread.start();
+        log("main() end");
+
+    }
+    static class MyRunnable implements Runnable {
+        @Override
+        public void run() {
+            log("run()");
+        }
+    }
+}
+
+/**
+ * 익명 클래스 
+ */
+public class InnerRunnableMain3 {
+  public static void main(String[] args) {
+    log("main() start");
+    Thread thread = new Thread(new Runnable() {
+      @Override
+      public void run() {
+        log("run()");
+      }
+    });
+    thread.start();
+    log("main() end");
+
+  }
+}
+
+/**
+ * 람다식
+ */
+public class InnerRunnableMain4 {
+  public static void main(String[] args) {
+    log("main() start");
+    Thread thread = new Thread(() -> log("run()"));
+    thread.start();
+    log("main() end");
+
+  }
+}
+```
+
+## 2. 스레드 제어와 생명 주기
+### Thread 클래스
+- Thread 클래스는 스레드를 생성하고 관리하는 기능을 제공한다.
+```
+Thread myThread = new Thread(new HelloThread(), "myThread");
+myThread : Thread[#23,myThread,5,main]
+myThread.threadId() : 23
+myThread.getName() : myThread
+myThread.getPriority() : 5
+myThread.getThreadGroup() : java.lang.ThreadGroup[name=main,maxpri=10]
+myThread.getState() : NEW
+```
+- 스레드 상태 `.getState()`
+  - `NEW` : 스레드가 아직 시작되지 않은 상태
+  - `RUNNABLE` : 스레드가 실행 중이거나 실행될 준비가 된 상태
+  - `BLOCKED`  : 스레드가 동기화 락을 기다리는 상태
+  - `WAITING` : 스레드가 다른 스레드의 특정 작업이 완료되기를 기다리는 상태
+  - `TIMED_WAITING` : 일정 시간 동안 기다리는 상태 (`Thread.sleep()`)
+  - `TERMINATED` : 스레드가 실행을 마친 상태
+  ![img.png](images/스레드_상태.png)
+
+### 스레드의 생명 주기 
+
+
+
+
+
